@@ -161,26 +161,26 @@ cog_directory_files_handler_run (CogRequestHandler      *request_handler,
 {
     CogDirectoryFilesHandler *handler = COG_DIRECTORY_FILES_HANDLER (request_handler);
 
-    g_autoptr(SoupURI) uri =
-        soup_uri_new (webkit_uri_scheme_request_get_uri (request));
+    g_autoptr(GUri) uri =
+        g_uri_parse (webkit_uri_scheme_request_get_uri (request), SOUP_HTTP_URI_FLAGS, NULL);
 
     /*
      * If we get an empty path, redirect to the root resource "/", otherwise
      * subresources cannot load properly as there would be no base URI.
      */
-    const char *path = soup_uri_get_path (uri);
+    const char *path = g_uri_get_path (uri);
     if (path[0] != '/') {
-        soup_uri_set_path (uri, "/");
-        g_autofree char *uri_string = soup_uri_to_string (uri, FALSE);
+        g_autoptr(GUri) new_uri = soup_uri_copy (uri, SOUP_URI_PATH, "/", SOUP_URI_NONE);
+        g_autofree char *uri_string = g_uri_to_string (new_uri);
         webkit_web_view_load_uri (webkit_uri_scheme_request_get_web_view (request), uri_string);
         return;
     }
 
     g_autoptr(GFile) base_path = NULL;
     if (handler->use_host) {
-        const char *host = soup_uri_get_host (uri);
+        const char *host = g_uri_get_host (uri);
         if (!host || host[0] == '\0') {
-            g_autofree char *uri_string = soup_uri_to_string (uri, FALSE);
+            g_autofree char *uri_string = g_uri_to_string (uri);
             g_autoptr(GError) error = g_error_new (G_FILE_ERROR,
                                                    G_FILE_ERROR_INVAL,
                                                    "No host in URI: %s",

@@ -113,9 +113,9 @@ set(COGCORE_SOURCES
     core/cog-platform.c
 )
 
-pkg_check_modules(GIO IMPORTED_TARGET REQUIRED gio-2.0>=2.44)
-pkg_check_modules(SOUP IMPORTED_TARGET REQUIRED libsoup-2.4)
-pkg_check_modules(WebKit IMPORTED_TARGET REQUIRED wpe-webkit-1.0>=2.28.0 wpe-1.0>=1.6.0)
+pkg_check_modules(GIO IMPORTED_TARGET REQUIRED gio-2.0>=2.67.4)
+pkg_check_modules(SOUP IMPORTED_TARGET REQUIRED libsoup-3.0>=2.99.3)
+pkg_check_modules(WebKit IMPORTED_TARGET REQUIRED wpe-webkit-1.1>=2.31.0)
 
 include(CheckCCompilerFlag)
 check_c_compiler_flag(-Wall HAS_WALL)
